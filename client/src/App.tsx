@@ -1,7 +1,20 @@
-const App = () => {
-  return (
-    <div>App</div>
-  )
-}
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./pages/Home";
+import Auth from "./pages/Auth";
 
-export default App
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/auth",
+    element: <Auth />,
+  },
+]);
+
+const App = () => {
+  return <RouterProvider router={router} />;
+};
+
+export default App;

@@ -2,9 +2,11 @@ import { Lock, Mail, User } from "lucide-react";
 import { useState } from "react";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import { useLocation } from "react-router-dom";
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const { state } = useLocation();
+  const [isLogin, setIsLogin] = useState(state?.isLogin ? true : false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",

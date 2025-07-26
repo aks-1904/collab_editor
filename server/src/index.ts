@@ -9,6 +9,7 @@ import {
 } from "./config/index.js";
 import morgan from "morgan";
 import { apiLimiter, authLimiter } from "./middlewares/rateLimiter.js";
+import authRoutes from "./routes/auth.routes.js";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -22,7 +23,7 @@ app.use(morgan("dev"));
 // --- Custom Middlewares ---
 app.use("/api", apiLimiter); // Api Limiter to limit multiple request from same IP addresses
 
-app.use("/api/v1/auth", authLimiter); // AuthLimiter for authentication routes
+app.use("/api/v1/auth", authLimiter, authRoutes); // AuthLimiter for authentication routes
 
 // --- Routes ---
 app.get("/", (_: Request, res: Response) => {

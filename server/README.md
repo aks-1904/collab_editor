@@ -63,6 +63,117 @@ You should see the following when everything is connected properly:
 🎉 Server listening on http://localhost:3000
 ```
 
+---
+
+# Rate Limiter
+
+Limiting request from a IP to reduce load from server and improve security
+
+```js
+// For other apis
+apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 100, // 15 minutes
+  max: 100, // limit each IP to 100 request per window
+  standardHeaders: true,
+  legacyHeaders: true,
+  message: {
+    success: false,
+    message: "Too many request from this IP address. Try again later",
+  },
+});
+
+// For authentication apis (login, register)
+authLimiter = rateLimit({
+  windowMs: 60 * 60 * 100, // 60 minutes
+  max: 5, // limit each IP to 5 request per window
+  standardHeaders: true,
+  legacyHeaders: true,
+  message: {
+    success: false,
+    message: "Too many request to authenticate, try again later",
+  },
+});
+```
+
+---
+
+# Database
+
+Sample user table to be created in `mySQL` database
+
+### SQL
+
+```sql
+CREATE TABLE users (
+  id VARCHAR(36) PRIMARY KEY, -- or CHAR(36) for UUIDs
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+# Apis
+
+## Authentication Api
+
+Make sure to start the server (by default server will run on port 8080)
+
+### 1. Register
+Sample `POST` data
+
+```json
+{
+  "name": "Akshay Sharma",
+  "email": "asharma.19042007@gmail.com"
+  "password": "securePassword"
+}
+```
+
+Api response when user created Successfully
+
+```json
+{
+  success: true,
+  message: "Registered successfully",
+  token, // JWT Token
+  user: { // User Data
+    id,
+    name,
+    email,
+  },
+}
+```
+
+### 2. Login
+Sample `POST` data
+
+```json
+{
+  "email": "asharma.19042007@gmail.com"
+  "password": "securePassword"
+}
+```
+
+Api response when user data is correct
+
+```json
+{
+  success: true,
+  message: "Login successfully",
+  token, // JWT Token
+  user: { // User Data
+    id,
+    name,
+    email,
+  },
+}
+```
+
+---
+
 ## ⚙️ Environment Variables
 
 Your `.env` file configures the application. Ensure all variables are correctly set.
@@ -71,6 +182,7 @@ Your `.env` file configures the application. Ensure all variables are correctly 
 # --- Application ---
 PORT=8080
 FRONTEND_URL=http://localhost:5173
+JWT_SECRET=<your_jwt_secret>
 
 # --- Database Credentials ---
 MONGO_URI=mongodb://localhost:27017/collab_editor
@@ -82,8 +194,10 @@ MYSQL_DATABASE=collab_editor_users
 
 REDIS_HOST=localhost
 REDIS_PORT=6379
-REDIS_PASSWORD=
+REDIS_PASSWORD=<your_redis_password>
 ```
+
+---
 
 ## 💻 Technology Stack
 
@@ -99,14 +213,18 @@ This server leverages a modern and powerful stack to handle real-time demands:
 - **Frontend**: React with TypeScript.
 - **Security**: `cors` for resource sharing and `express-rate-limit` for protecting sensitive endpoints.
 
+---
+
 ## 📂 Project Structure
 
 ```
 .
 ├── src/
 │   ├── config/         # Database connections, CORS, etc.
+│   ├── controllers/    # Business logics.
 │   ├── middlewares/    # Custom middlewares (e.g., rate limiter)
 │   ├── routes/         # HTTP route definitions
+│   ├── utils/          # Utilities functions
 │   ├── sockets/        # WebSocket event handlers
 │   └── index.ts        # Main Express server entry point
 ├── .env

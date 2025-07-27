@@ -3,17 +3,19 @@ import { useState } from "react";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const Auth = () => {
   const { state } = useLocation();
   const [isLogin, setIsLogin] = useState(state?.isLogin ? true : false);
-  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+
+  const { register, loading } = useAuth();
 
   const handleInputChange =
     (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,10 +26,17 @@ const Auth = () => {
     };
 
   const handleSubmit = async () => {
-    setLoading(true);
-
-    console.log(isLogin ? "Login" : "Register", formData);
-    setLoading(false);
+    const { name, email, password, confirmPassword } = formData;
+    if (isLogin) {
+      console.log("Login");
+    } else {
+      await register({
+        name,
+        email,
+        password,
+        confirmPassword,
+      });
+    }
   };
 
   const toggleMode = () => {

@@ -1,49 +1,43 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-// Typescript interface of a logged in user
 interface User {
   id: string;
   name: string;
   email: string;
 }
 
-// Typescript interface of UserSlice
-interface UserSlice {
+interface UserSliceState {
   isAuthenticated: boolean;
   loading: boolean;
-  user: User | null; // Initially user will be null if not authenticated;
+  user: User | null;
 }
 
-// Definition of UserSlice
+const initialState: UserSliceState = {
+  isAuthenticated: false,
+  loading: false,
+  user: null,
+};
+
 const userSlice = createSlice({
   name: "user",
-  initialState: {
-    isAuthenticated: false,
-    loading: false,
-    user: null,
-  } as UserSlice, // Assert the initial state type
+  initialState,
   reducers: {
-    // Actions
-    setUser: (state, action) => {
-      // To set logged in user
+    setUser: (state, action: PayloadAction<User>) => {
       state.isAuthenticated = true;
       state.user = action.payload;
       state.loading = false;
     },
-    setUserLoading: (state, _) => {
-      // When user profile is loading
-      state.loading = true;
+    setUserLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
     },
-    logoutUser: (state, _) => {
-      // If user logout
+    logoutUser: (state) => {
       state.isAuthenticated = false;
       state.loading = false;
       state.user = null;
     },
     loginFailure: (state) => {
-      // Action for login failed
-      state.loading = false;
       state.isAuthenticated = false;
+      state.loading = false;
       state.user = null;
     },
   },

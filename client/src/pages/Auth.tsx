@@ -15,7 +15,7 @@ const Auth = () => {
     confirmPassword: "",
   });
 
-  const { register, loading } = useAuth();
+  const { register, loading, login } = useAuth();
 
   const handleInputChange =
     (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +28,10 @@ const Auth = () => {
   const handleSubmit = async () => {
     const { name, email, password, confirmPassword } = formData;
     if (isLogin) {
-      console.log("Login");
+      await login({
+        email,
+        password,
+      });
     } else {
       await register({
         name,

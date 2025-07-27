@@ -21,6 +21,11 @@ interface CreateAccountCredential {
   confirmPassword: string;
 }
 
+interface LoginCredential {
+  email: string;
+  password: string;
+}
+
 const AUTH_API_URL = `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth`; // Backend authentication api url
 
 export const useAuth = () => {
@@ -28,6 +33,66 @@ export const useAuth = () => {
   const dispatch = useAppDispatch();
   const loading = useAppSelector((state) => state.user.loading);
   const navigate = useNavigate();
+
+  const login = async ({ email, password }: LoginCredential) => {
+    dispatch(setUserLoading(true));
+
+    try {
+      showToast({
+        type: "info",
+        title: "Please Wait...",
+        message: "Be patient, It won't take long",
+        duration: 1000,
+      });
+
+      // Checking for valid data
+      if (!isValidEmail(email)) throw new Error("Invalid email");
+      if (!isValidPassword(password)) throw new Error("Invalid credentials");
+
+      // Login api call
+      const res = await axios.post(
+        `${AUTH_API_URL}/login`,
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (res?.data?.success) {
+        localStorage.setItem("token", res?.data?.token);
+        dispatch(setUser(res?.data?.user));
+        showToast({
+          type: "success",
+          title: "Success!",
+          message: res?.data?.message || "Login successfully",
+          duration: 2000,
+        });
+        navigate("/dashboard", {
+          replace: true,
+        });
+      }
+    } catch (error: any) {
+      dispatch(loginFailure()); // State setting to initial
+      const errorMsg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Internal server error, try again later";
+      showToast({
+        type: "error",
+        title: "Registration Failed",
+        message: errorMsg,
+        duration: 5000,
+      });
+    } finally {
+      dispatch(setUserLoading(false));
+    }
+  };
 
   const register = async ({
     name,
@@ -99,5 +164,5 @@ export const useAuth = () => {
     }
   };
 
-  return { register, loading };
+  return { register, loading, login };
 };

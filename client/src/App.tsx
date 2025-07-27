@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import { persistor, store } from "./store/store";
 import { PersistGate } from "redux-persist/integration/react";
 import Loading from "./pages/Loading";
+import { ToastProvider } from "./components/ToastProvider";
 
 const router = createBrowserRouter([
   {
@@ -19,11 +20,13 @@ const router = createBrowserRouter([
 
 const App = () => {
   return (
-    <Provider store={store}>
-      <PersistGate loading={<Loading />} persistor={persistor}>
-        <RouterProvider router={router} />;
-      </PersistGate>
-    </Provider>
+    <ToastProvider>
+      <Provider store={store}>
+        <PersistGate loading={<Loading />} persistor={persistor}>
+          <RouterProvider router={router} />;
+        </PersistGate>
+      </Provider>
+    </ToastProvider>
   );
 };
 

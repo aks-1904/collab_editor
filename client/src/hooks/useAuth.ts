@@ -8,6 +8,7 @@ import { useToast } from "./useToast";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import {
   loginFailure,
+  logoutUser,
   setUser,
   setUserLoading,
 } from "../store/slices/userSlice";
@@ -164,5 +165,16 @@ export const useAuth = () => {
     }
   };
 
-  return { register, loading, login };
+  const logout = () => {
+    dispatch(logoutUser());
+    localStorage.removeItem("token");
+    showToast({
+      type: "success",
+      title: "Logout",
+      message: "Logged out successfully",
+      duration: 3000,
+    });
+  };
+
+  return { register, loading, login, logout };
 };

@@ -5,7 +5,7 @@ interface UserProjectCard {
   name: string;
   description: string;
   members: number;
-  status: string;
+  isPublic: boolean;
   lastUpdated: string;
   tech: string[];
   gradient: string;
@@ -16,7 +16,8 @@ interface Props {
 }
 
 const UserProjectCard = ({ projectData }: Props) => {
-    const {name, description, members, status, lastUpdated, tech, gradient} = projectData;
+  const { name, description, members, isPublic, lastUpdated, tech, gradient } =
+    projectData;
   return (
     <div className="group bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 rounded-2xl p-6 hover:border-gray-700/50 transition-all duration-300 hover:transform hover:scale-105">
       <div className="flex items-start justify-between mb-4">
@@ -30,12 +31,12 @@ const UserProjectCard = ({ projectData }: Props) => {
         </div>
         <span
           className={`px-3 py-1 text-xs rounded-full font-medium ${
-            status === "Active"
-              ? "bg-green-500/20 text-green-400 border border-green-500/30"
-              : "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
+            isPublic
+              ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+              : "bg-green-500/20 text-green-400 border border-green-500/30"
           }`}
         >
-          {status}
+          {isPublic ? "Public" : "Private"}
         </span>
       </div>
       <p className="text-gray-300 text-sm mb-6 leading-relaxed">

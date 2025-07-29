@@ -1,14 +1,11 @@
 import { useState } from "react";
-import {
-  X,
-  Plus,
-  UserPlus,
-  Check,
-} from "lucide-react";
+import { Plus, Bell } from "lucide-react";
 import Navbar from "../components/Navbar";
 import UserProjectCard from "../components/dashboard/UserProjectCard";
 import CollaborativeProjectCard from "../components/dashboard/CollaborativeProjectCard";
 import OpenSourceProjectCard from "../components/dashboard/OpenSourceProjectCard";
+import Button from "../components/Button";
+import NotificationPanel from "../components/dashboard/NotificationPanel";
 const Dashboard = () => {
   // Mock data for demonstration
   const [userProjects] = useState([
@@ -18,7 +15,7 @@ const Dashboard = () => {
       description:
         "Full-stack React and Node.js e-commerce solution with advanced analytics",
       members: 4,
-      status: "Active",
+      isPublic: true,
       lastUpdated: "2 hours ago",
       tech: ["React", "Node.js", "MongoDB"],
       gradient: "from-blue-500 to-purple-600",
@@ -29,7 +26,7 @@ const Dashboard = () => {
       description:
         "Collaborative task management with real-time updates and AI insights",
       members: 2,
-      status: "In Progress",
+      isPublic: false,
       lastUpdated: "1 day ago",
       tech: ["Vue.js", "Firebase"],
       gradient: "from-green-500 to-teal-600",
@@ -116,6 +113,8 @@ const Dashboard = () => {
     },
   ]);
 
+  const [openNotificationPanel, setOpenNotificationPanel] = useState(false);
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Animated Background */}
@@ -129,7 +128,7 @@ const Dashboard = () => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mt-10">
           {/* Main Content */}
-          <div className="lg:col-span-3 space-y-12">
+          <div className="col-span-4 space-y-12">
             {/* My Projects */}
             <section>
               <div className="flex items-center justify-between mb-8">
@@ -139,10 +138,21 @@ const Dashboard = () => {
                     {userProjects.length} active
                   </div>
                 </div>
-                <button className="flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-blue-500/25 font-medium">
-                  <Plus size={18} className="mr-2" />
-                  New Project
-                </button>
+                <div className="flex gap-4">
+                  <Button className="flex items-center px-6 py-3 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-blue-500/25 font-medium">
+                    <Plus size={18} className="mr-2" />
+                    New Project
+                  </Button>
+                  <button
+                    className="hover:text-purple-500 transition-colors duration-200 relative"
+                    onClick={() => setOpenNotificationPanel(true)}
+                  >
+                    <Bell />
+                    <span className="absolute top-0 -right-2 bg-gradient-to-r rounded-full text-sm px-1 from-blue-500 to-purple-500 text-white aspect-square">
+                      6
+                    </span>
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -189,71 +199,13 @@ const Dashboard = () => {
               </div>
             </section>
           </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 rounded-2xl p-6 sticky top-8">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="p-2 bg-blue-500/20 rounded-xl">
-                  <UserPlus className="w-5 h-5 text-blue-400" />
-                </div>
-                <h3 className="font-bold text-white text-lg">Join Requests</h3>
-              </div>
-
-              {joinRequests.length === 0 ? (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-gray-800/50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <UserPlus className="w-8 h-8 text-gray-600" />
-                  </div>
-                  <p className="text-gray-400 text-sm">No pending requests</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {joinRequests.map((request) => (
-                    <div
-                      key={request.id}
-                      className="bg-gray-800/30 border border-gray-700/50 rounded-xl p-4 hover:border-gray-600/50 transition-all duration-200"
-                    >
-                      <div className="flex items-start space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl flex items-center justify-center text-sm font-bold">
-                          {request.avatar}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-white text-sm mb-1">
-                            {request.requester}
-                          </p>
-                          <p className="text-gray-400 text-xs mb-2">
-                            wants to join{" "}
-                            <span className="text-blue-400">
-                              {request.projectName}
-                            </span>
-                          </p>
-                          <p className="text-gray-300 text-xs mb-4 leading-relaxed bg-gray-900/50 p-2 rounded-lg border border-gray-700/30">
-                            "{request.message}"
-                          </p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-gray-500 text-xs">
-                              {request.timeAgo}
-                            </span>
-                            <div className="flex space-x-2">
-                              <button className="p-2 text-green-400 hover:text-white hover:bg-green-500/20 border border-green-500/30 hover:border-green-500/50 rounded-lg transition-all duration-200">
-                                <Check size={14} />
-                              </button>
-                              <button className="p-2 text-red-400 hover:text-white hover:bg-red-500/20 border border-red-500/30 hover:border-red-500/50 rounded-lg transition-all duration-200">
-                                <X size={14} />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
         </div>
       </div>
+      <NotificationPanel
+        open={openNotificationPanel}
+        setOpen={setOpenNotificationPanel}
+        projectData={joinRequests}
+      />
     </div>
   );
 };

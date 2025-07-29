@@ -61,18 +61,19 @@ The application will run at [http://localhost:5173](http://localhost:5173) by de
 
 ```
 .
-├── public/             # Static assets
+├── public/               # Static assets
 ├── src/
-│   ├── assets/         # Images, icons, etc.
-│   ├── components/     # Reusable UI components
-│   ├── hooks/          # Custom React hooks
-│   ├── pages/          # Top-level views/routes
-│   │   ├── Home.tsx    # Homepage (/)
-│   │   ├── Auth.tsx    # Login/Register page (/auth)
-│   │   └── Loading.tsx # Loading screen during lazy loads
-│   ├── store/          # Redux store and slices
-│   ├── App.tsx         # Root component with routing
-│   └── main.tsx        # Entry point
+│   ├── assets/           # Images, icons, etc.
+│   ├── components/       # Reusable UI components
+│   ├── hooks/            # Custom React hooks
+│   ├── pages/            # Top-level views/routes
+│   │   ├── Home.tsx      # Homepage (/)
+│   │   ├── Auth.tsx      # Login/Register page (/auth)
+│   │   ├── Dashboard.tsx # Users Dashboard (/dashboard)
+│   │   └── Loading.tsx   # Loading screen during lazy loads
+│   ├── store/            # Redux store and slices
+│   ├── App.tsx           # Root component with routing
+│   └── main.tsx          # Entry point
 ├── index.html
 ├── package.json
 └── tsconfig.json
@@ -96,6 +97,12 @@ Users can:
 - Log in to an existing account
 - Sessions are stored and persisted using Redux + `redux-persist`
 
+### `/dashboard` Dashboard Page
+Users can:
+- Create a new project
+- Can see all project he is in
+- Project data stored using Redux
+
 ### `Loading` Page
 
 - A full-screen loader shown while routes or heavy components are being fetched.
@@ -108,7 +115,6 @@ Users can:
 - Real-time cursor and selection tracking
 - In-editor commenting UI
 - File tree explorer and editor tabs
-- Authentication & authorization integration
 - Theme toggle (light/dark)
 - Notifications and collaboration invites
 
@@ -117,4 +123,3 @@ Users can:
 ## 🤝 Contributing
 
 We welcome contributions! Feel free to open issues or submit pull requests to help improve Collab-Editor.
-

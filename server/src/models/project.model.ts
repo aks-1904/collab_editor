@@ -12,7 +12,7 @@ const FileSchema = new Schema({
 });
 
 // Project Schema
-const ProjectSchema = new Schema(
+const ProjectSchema = new Schema( 
   {
     name: { type: String, required: true },
     description: { type: String },

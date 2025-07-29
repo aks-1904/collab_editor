@@ -99,9 +99,9 @@ authLimiter = rateLimit({
 
 # Database
 
-Sample user table to be created in `mySQL` database
-
 ### SQL
+
+Sample user table to be created in `mySQL` database
 
 ```sql
 CREATE TABLE users (
@@ -113,6 +113,71 @@ CREATE TABLE users (
 );
 ```
 
+### MongoDB
+
+Sample project data structure created using `mongoose`
+
+```js
+  {
+    name: String,
+    owner: String, // User id of user from mysql
+    members: String[], // Array of user ids
+    fileStructure: Schema.Types.Mixed, // File structure can be anything so mixed
+    isPublic: Boolean,
+    stars: Number
+  }
+```
+
+Structure to store file or folder data
+
+```ts
+// Base Node (for both file and folder)
+interface BaseNode {
+  id: string;
+  name: string;
+  type: FileType;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// For Files only
+interface FileNode extends BaseNode {
+  type: "file";
+  content?: string; // Can be null
+  language?: string; // Can be null
+}
+
+// For Folders only
+interface FolderNode extends BaseNode {
+  type: "folder";
+  children: FileStructureNode[]; // Can include other files or folder
+}
+
+interface FilStructureNode = FileNode | FolderNode;
+```
+
+---
+
+# Middlewares
+
+`isAuthenticated` Checks if request is from a valid user or not
+
+- Getting token from frontend via header
+
+```ts
+const authHeader = req.headers.authorization;
+```
+
+- Checking for a valid token should be in format `Bearer <token>`
+- If it is valid storing it in a type defined `AuthenticationRequest`
+
+```ts
+export interface AuthenticationRequest extends Request {
+  id?: string; // User Id
+  email?: string; // User mail id
+}
+```
+
 ---
 
 # Apis
@@ -122,6 +187,7 @@ CREATE TABLE users (
 Make sure to start the server (by default server will run on port 8080)
 
 ### 1. Register
+
 Sample `POST` data
 
 ```json
@@ -148,6 +214,7 @@ Api response when user created Successfully
 ```
 
 ### 2. Login
+
 Sample `POST` data
 
 ```json

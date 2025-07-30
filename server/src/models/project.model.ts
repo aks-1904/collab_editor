@@ -26,6 +26,7 @@ type FileStructureNode = FileNode | FolderNode;
 // Project document interface
 export interface IProject extends Document {
   name: string;
+  description: string;
   owner: string; // userId
   members: string[]; // Array of userId
   fileStructure?: FileStructureNode;
@@ -40,6 +41,10 @@ const ProjectSchema: Schema = new Schema<IProject>(
     name: {
       type: String,
       required: true,
+    },
+    description: {
+      type: String,
+      default: "",
     },
     owner: {
       type: String,

@@ -16,3 +16,18 @@ export const isValidPassword = (password: string): boolean => {
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   return passwordRegex.test(password);
 };
+
+export function isValidProjectName(projectName: string): boolean {
+  if (!projectName || typeof projectName !== "string") return false;
+
+  // Trim leading/trailing whitespace
+  const trimmedName = projectName.trim();
+
+  // Check length
+  if (trimmedName.length < 3 || trimmedName.length > 50) return false;
+
+  // Regex: allow letters, numbers, dashes, underscores, and spaces
+  const validPattern = /^[a-zA-Z0-9 _-]+$/;
+
+  return validPattern.test(trimmedName);
+}

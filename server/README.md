@@ -113,6 +113,18 @@ CREATE TABLE users (
 );
 ```
 
+Samples `users_project` table to store the user project ids
+
+```sql
+-- Projects the user owns
+CREATE TABLE user_projects (
+  user_id VARCHAR(36),
+  project_id VARCHAR(36), -- This is the _id from MongoDB
+  PRIMARY KEY (user_id, project_id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+```
+
 ### MongoDB
 
 Sample project data structure created using `mongoose`
@@ -120,6 +132,7 @@ Sample project data structure created using `mongoose`
 ```js
   {
     name: String,
+    description: String,
     owner: String, // User id of user from mysql
     members: String[], // Array of user ids
     fileStructure: Schema.Types.Mixed, // File structure can be anything so mixed
@@ -182,13 +195,15 @@ export interface AuthenticationRequest extends Request {
 
 # Apis
 
+Make sure to start the server (by default server will run on port 8080)
+
 ## Authentication Api
 
-Make sure to start the server (by default server will run on port 8080)
+All business logics to register or login user will be on `/api/v1/auth` routes
 
 ### 1. Register
 
-Sample `POST` data
+Sample `POST` data on `/register`
 
 ```json
 {
@@ -215,7 +230,7 @@ Api response when user created Successfully
 
 ### 2. Login
 
-Sample `POST` data
+Sample `POST` data on `/login`
 
 ```json
 {
@@ -236,6 +251,45 @@ Api response when user data is correct
     name,
     email,
   },
+}
+```
+
+## Project Api
+
+All business logics to create, update, delete projects will be in `/api/v1/project` routes
+
+### 1. Create
+
+Sample `POST` data on `/`
+
+- Only authenticated user can create project because of `isAuthenticated` middlware
+- Make sure to send the token in headers format:- `Bearer <token>`
+
+```json
+{
+  "name": "Collab_editor",
+  "description": "This is the project description", // Optional
+  "isPublic": true // Optional
+}
+```
+
+Api response when data is valid
+
+```json
+{
+  success: true,
+  project: { // Project data
+    name: "Collab_editor",
+    description: "This is the project description",
+    owner: "user_id",
+    members: ["user1_id", "user2_id"], // Empty by default
+    isPublic: true,
+    stars: 0, // 0 by default
+    _id: "project_id",
+    createdAt: Date,
+    updatedAt: Date,
+    __v: number,
+  }
 }
 ```
 
@@ -281,6 +335,8 @@ This server leverages a modern and powerful stack to handle real-time demands:
 - **Security**: `cors` for resource sharing and `express-rate-limit` for protecting sensitive endpoints.
 
 ---
+
+first
 
 ## 📂 Project Structure
 

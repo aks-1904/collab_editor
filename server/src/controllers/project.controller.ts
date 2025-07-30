@@ -3,6 +3,7 @@ import { AuthenticationRequest } from "../middlewares/isAuthenticated.js";
 import { mysqlPool } from "../config/index.js";
 import { isValidName } from "../utils/validators.js";
 import { Project } from "../models/project.model.js";
+import mongoose from "mongoose";
 
 export const createProject = async (
   req: AuthenticationRequest,
@@ -63,7 +64,7 @@ export const createProject = async (
     // Link project to user in SQL
     await mysqlPool.execute(
       `INSERT INTO user_projects (user_id, project_id) VALUES (?, ?) ON DUPLICATE KEY UPDATE project_id = project_id`,
-      [userId, project._id]
+      [userId, (project._id as mongoose.Schema.Types.ObjectId).toString()]
     );
 
     res.status(200).json({

@@ -1,13 +1,11 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
-import { Provider } from "react-redux";
-import { persistor, store } from "./store/store";
-import { PersistGate } from "redux-persist/integration/react";
-import Loading from "./pages/Loading";
-import { ToastProvider } from "./components/ToastProvider";
+import { useAppSelector } from "./store/store";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./protectedRoutes/ProtectedRoute";
+import { useEffect } from "react";
+import { useUser } from "./hooks/useUser";
 
 const router = createBrowserRouter([
   {
@@ -31,15 +29,17 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-  return (
-    <ToastProvider>
-      <Provider store={store}>
-        <PersistGate loading={<Loading />} persistor={persistor}>
-          <RouterProvider router={router} />
-        </PersistGate>
-      </Provider>
-    </ToastProvider>
-  );
+  const token = localStorage.getItem("token");
+  const { user } = useAppSelector((store) => store.user);
+  const { getUserProfile } = useUser();
+
+  useEffect(() => {
+    if (token && !user) {
+      getUserProfile();
+    }
+  }, []);
+
+  return <RouterProvider router={router} />;
 };
 
 export default App;

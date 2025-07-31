@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./protectedRoutes/ProtectedRoute";
 import { useEffect } from "react";
 import { useUser } from "./hooks/useUser";
+import Loading from "./pages/Loading";
 
 const router = createBrowserRouter([
   {
@@ -31,7 +32,7 @@ const router = createBrowserRouter([
 const App = () => {
   const token = localStorage.getItem("token");
   const { user } = useAppSelector((store) => store.user);
-  const { getUserProfile } = useUser();
+  const { getUserProfile, loading } = useUser();
 
   useEffect(() => {
     if (token && !user) {
@@ -39,7 +40,7 @@ const App = () => {
     }
   }, []);
 
-  return <RouterProvider router={router} />;
+  return loading ? <Loading /> : <RouterProvider router={router} />;
 };
 
 export default App;

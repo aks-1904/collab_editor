@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Bell } from "lucide-react";
 import Navbar from "../components/Navbar";
 import UserProjectCard from "../components/dashboard/UserProjectCard";
@@ -7,6 +7,8 @@ import OpenSourceProjectCard from "../components/dashboard/OpenSourceProjectCard
 import Button from "../components/Button";
 import NotificationPanel from "../components/dashboard/NotificationPanel";
 import CreateProject from "../components/dialog/CreateProject";
+import { useUser } from "../hooks/useUser";
+
 const Dashboard = () => {
   // Mock data for demonstration
   const [userProjects] = useState([
@@ -116,6 +118,12 @@ const Dashboard = () => {
 
   const [openNotificationPanel, setOpenNotificationPanel] = useState(false);
   const [showCreateProjectDialog, setShowCreateProjectDialog] = useState(false);
+
+  const { getUserProjects } = useUser();
+
+  useEffect(() => {
+    getUserProjects();
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white">

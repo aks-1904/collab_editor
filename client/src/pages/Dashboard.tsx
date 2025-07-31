@@ -6,6 +6,7 @@ import CollaborativeProjectCard from "../components/dashboard/CollaborativeProje
 import OpenSourceProjectCard from "../components/dashboard/OpenSourceProjectCard";
 import Button from "../components/Button";
 import NotificationPanel from "../components/dashboard/NotificationPanel";
+import CreateProject from "../components/dialog/CreateProject";
 const Dashboard = () => {
   // Mock data for demonstration
   const [userProjects] = useState([
@@ -114,6 +115,7 @@ const Dashboard = () => {
   ]);
 
   const [openNotificationPanel, setOpenNotificationPanel] = useState(false);
+  const [showCreateProjectDialog, setShowCreateProjectDialog] = useState(false);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -139,7 +141,10 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <Button className="flex items-center px-6 py-3 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-blue-500/25 font-medium">
+                  <Button
+                    onClick={() => setShowCreateProjectDialog(true)}
+                    className="flex items-center px-6 py-3 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-blue-500/25 font-medium"
+                  >
                     <Plus size={18} className="mr-2" />
                     New Project
                   </Button>
@@ -205,6 +210,10 @@ const Dashboard = () => {
         open={openNotificationPanel}
         setOpen={setOpenNotificationPanel}
         projectData={joinRequests}
+      />
+      <CreateProject
+        isOpen={showCreateProjectDialog}
+        onClose={() => setShowCreateProjectDialog(false)}
       />
     </div>
   );

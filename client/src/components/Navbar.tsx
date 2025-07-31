@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/store";
 import LogoutDialog from "./dialog/Logout";
 import { useAuth } from "../hooks/useAuth";
+import CreateProject from "./dialog/CreateProject";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const [showCreateAccountDialog, setShowCreateAccountDialog] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,11 +26,6 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     setShowLogoutDialog(false);
-    navigate("/auth", {
-      state: {
-        isLogin: true,
-      },
-    });
   };
 
   return (
@@ -56,7 +53,12 @@ const Navbar = () => {
               <div className="ml-10 flex items-baseline space-x-8">
                 {isAuthenticated ? (
                   <>
-                    <span className="text-gray-300 cursor-default hover:text-white px-3 py-2 text-sm font-medium transition-colors duration-200 hover:bg-gray-800/50 rounded-lg">
+                    <span
+                      className="text-gray-300 cursor-default hover:text-white px-3 py-2 text-sm font-medium transition-colors duration-200 hover:bg-gray-800/50 rounded-lg"
+                      onClick={() => {
+                        setShowCreateAccountDialog(true);
+                      }}
+                    >
                       Create Project
                     </span>
                     <span
@@ -143,6 +145,9 @@ const Navbar = () => {
                       if (item === "Logout") {
                         setShowLogoutDialog(true);
                       }
+                      if (item === "Create Project") {
+                        setShowCreateAccountDialog(true);
+                      }
                     }}
                     key={item}
                     className={`text-gray-300 hover:text-white block px-3 py-2 text-base font-medium transition-colors duration-200 hover:bg-gray-800/50 rounded-lg ${
@@ -183,6 +188,10 @@ const Navbar = () => {
         isOpen={showLogoutDialog}
         onClose={() => setShowLogoutDialog(false)}
         onConfirm={handleLogout}
+      />
+      <CreateProject
+        isOpen={showCreateAccountDialog}
+        onClose={() => setShowCreateAccountDialog(false)}
       />
     </>
   );

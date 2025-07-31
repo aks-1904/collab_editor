@@ -16,10 +16,12 @@ import {
   REHYDRATE,
 } from "redux-persist";
 import { persistStore } from "redux-persist";
+import projectSlice from "./slices/projectSlice";
 
 // Combine all required reducers
 const rootReducers = combineReducers({
   user: userSlice.reducer,
+  project: projectSlice.reducer,
 });
 
 // Persist config

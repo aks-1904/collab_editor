@@ -174,6 +174,12 @@ export const useAuth = () => {
       message: "Logged out successfully",
       duration: 3000,
     });
+    navigate("/auth", {
+      replace: true,
+      state: {
+        isLogin: true,
+      },
+    });
   };
 
   return { register, loading, login, logout };

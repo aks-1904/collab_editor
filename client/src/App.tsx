@@ -7,6 +7,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import Loading from "./pages/Loading";
 import { ToastProvider } from "./components/ToastProvider";
 import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./protectedRoutes/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -19,7 +20,13 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <Dashboard />,
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: "",
+        element: <Dashboard />,
+      },
+    ],
   },
 ]);
 

@@ -254,6 +254,68 @@ Api response when user data is correct
 }
 ```
 
+## User Api
+
+All business logics to get user profile, projects or collaborative projects data will be in `/api/v1/user/` routes
+
+- User should be authenticated
+- Token should be send in header in format:- `Bearer <token>`
+
+### 1. User Profile
+
+`GET` request on `/profile`
+
+Api response on success
+
+```json
+success: true,
+user: {
+  name: "User Name",
+  email: "sample.19@gmail.com",
+  id: "<user_id>"
+}
+```
+
+### 2. User Projects
+
+`GET` request on `/projects`
+
+Api response on success
+
+```json
+success: true,
+projects: [ // Projects data is in array of type Project
+  {
+    "_id": "688a464d62b1c3d3e5ee2b57",
+    "name": "Collab Editor",
+    "description": "This is colab editor project",
+    "owner": "5f592871-6d8b-408c-957c-b57da9d47417",
+    "members": [],
+    "isPublic": false,
+    "stars": 0,
+    "createdAt": "2025-07-30T16:20:29.318Z",
+    "updatedAt": "2025-07-30T16:20:29.318Z",
+    "__v": 0
+  }
+]
+```
+
+### 3. Search User
+
+`GET` request on `/search`
+Search user by email
+
+- Make sure to send `email` of required user in query
+
+Api Response on success
+
+```json
+{
+  "success": true,
+  "users": [] // Array of users containing id, email and name
+}
+```
+
 ## Project Api
 
 All business logics to create, update, delete projects will be in `/api/v1/project` routes

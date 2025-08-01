@@ -3,6 +3,7 @@ import { AuthenticationRequest } from "../middlewares/isAuthenticated.js";
 import { mysqlPool } from "../config/index.js";
 import { IUser } from "./auth.controller.js";
 import { Project } from "../models/project.model.js";
+import { isValidEmail } from "../utils/validators.js";
 
 export const getUserProfile = async (
   req: AuthenticationRequest,
@@ -72,5 +73,39 @@ export const getUserProjects = async (
       message: "Cannot get your projects data",
     });
     return;
+  }
+};
+
+export const searchUser = async (req: AuthenticationRequest, res: Response) => {
+  try {
+    const { email } = req.query;
+    const loggedInUserEmail = req.email;
+
+    if (!email || !isValidEmail(email.toString())) {
+      res.status(402).json({
+        success: false,
+        message: "Provide valid email",
+      });
+    }
+
+    const [users] = await mysqlPool.execute(
+      "SELECT id, name, email from users where email = ?",
+      [email]
+    );
+
+    // Getting users other then logged in users
+    const requiredUsers = (users as IUser[]).filter(
+      (e) => e.email !== loggedInUserEmail
+    );
+
+    res.status(200).json({
+      success: true,
+      user: requiredUsers,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Cannot get the user",
+    });
   }
 };

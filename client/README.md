@@ -66,9 +66,9 @@ The application will run at [http://localhost:5173](http://localhost:5173) by de
 │   ├── assets/           # Images, icons, etc.
 │   ├── components/       # Reusable UI components
 │   ├── hooks/            # Custom React hooks
-│   ├── pages/            # Top-level views/routes
-│   ├── protectedRoutes/  # To Protect the routes like ("/dashboard", "/project/:id")
 │   ├── utils/            # All Utitlities functions
+│   ├── protectedRoutes/  # To Protect the routes
+│   ├── pages/            # Top-level views/routes
 │   │   ├── Home.tsx      # Homepage (/)
 │   │   ├── Auth.tsx      # Login/Register page (/auth)
 │   │   ├── Dashboard.tsx # Users Dashboard (/dashboard)

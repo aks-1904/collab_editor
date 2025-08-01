@@ -8,33 +8,12 @@ import Button from "../components/Button";
 import NotificationPanel from "../components/dashboard/NotificationPanel";
 import CreateProject from "../components/dialog/CreateProject";
 import { useUser } from "../hooks/useUser";
+import { useAppSelector } from "../store/store";
 
 const Dashboard = () => {
   // Mock data for demonstration
-  const [userProjects] = useState([
-    {
-      id: 1,
-      name: "E-commerce Platform",
-      description:
-        "Full-stack React and Node.js e-commerce solution with advanced analytics",
-      members: 4,
-      isPublic: true,
-      lastUpdated: "2 hours ago",
-      tech: ["React", "Node.js", "MongoDB"],
-      gradient: "from-blue-500 to-purple-600",
-    },
-    {
-      id: 2,
-      name: "Task Management App",
-      description:
-        "Collaborative task management with real-time updates and AI insights",
-      members: 2,
-      isPublic: false,
-      lastUpdated: "1 day ago",
-      tech: ["Vue.js", "Firebase"],
-      gradient: "from-green-500 to-teal-600",
-    },
-  ]);
+
+  const userProjects = useAppSelector((store) => store.project.my_projects);
 
   const [collaborativeProjects] = useState([
     {
@@ -122,7 +101,12 @@ const Dashboard = () => {
   const { getUserProjects } = useUser();
 
   useEffect(() => {
-    getUserProjects();
+    const hasFetched = sessionStorage.getItem("hasFetchedUserProjects");
+
+    if (!hasFetched) {
+      getUserProjects();
+      sessionStorage.setItem("hasFetchedUserProjects", "true");
+    }
   }, []);
 
   return (
@@ -142,11 +126,19 @@ const Dashboard = () => {
             {/* My Projects */}
             <section>
               <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center space-x-3">
-                  <h2 className="text-2xl font-bold text-white">My Projects</h2>
-                  <div className="px-3 py-1 bg-blue-500/20 text-blue-400 text-sm rounded-full border border-blue-500/30">
-                    {userProjects.length} active
-                  </div>
+                <div className="flex-1">
+                  {userProjects.length !== 0 ? (
+                    <div className="flex items-center space-x-3">
+                      <h2 className="text-2xl font-bold text-white">
+                        My Projects
+                      </h2>
+                      <div className="px-3 py-1 bg-blue-500/20 text-blue-400 text-sm rounded-full border border-blue-500/30">
+                        {userProjects.length} active
+                      </div>
+                    </div>
+                  ) : (
+                    <h2 className="text-3xl font-extrabold">Welcome</h2>
+                  )}
                 </div>
                 <div className="flex gap-4">
                   <Button
@@ -170,7 +162,7 @@ const Dashboard = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {userProjects.map((project) => (
-                  <UserProjectCard key={project.id} projectData={project} />
+                  <UserProjectCard key={project._id} projectData={project} />
                 ))}
               </div>
             </section>

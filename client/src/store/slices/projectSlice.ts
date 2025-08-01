@@ -3,6 +3,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 interface Project {
   _id: string;
   name: string;
+  description: string;
   owner: string;
   members: string[];
   isPublic: boolean;

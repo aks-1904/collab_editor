@@ -1,11 +1,36 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-interface Project {
+type FileType = "file" | "folder";
+
+interface BaseNode {
+  id: string;
+  name: string;
+  type: FileType;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface FileNode extends BaseNode {
+  type: "file";
+  content?: string;
+  language?: string;
+}
+
+interface FolderNode extends BaseNode {
+  type: "folder";
+  children: FileStructureNode[];
+}
+
+type FileStructureNode = FileNode | FolderNode;
+
+export interface Project {
   _id: string;
   name: string;
   description: string;
+  fileStructure?: FileStructureNode;
   owner: string;
-  members: string[];
+  techs?: string[];
+  members?: string[];
   isPublic: boolean;
   stars: number;
   createdAt: Date;

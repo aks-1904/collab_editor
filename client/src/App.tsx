@@ -7,6 +7,7 @@ import ProtectedRoute from "./protectedRoutes/ProtectedRoute";
 import { useEffect } from "react";
 import { useUser } from "./hooks/useUser";
 import Loading from "./pages/Loading";
+import ProjectDetails from "./pages/ProjectDetails";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
     ],
+  },
+  {
+    path: "/project/:id",
+    element: <ProjectDetails />,
   },
 ]);
 

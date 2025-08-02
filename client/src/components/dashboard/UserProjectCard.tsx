@@ -2,25 +2,15 @@ import { Clock, Users } from "lucide-react";
 import { getTimeSinceCreated } from "../../utils/time";
 import { getRandomGradient } from "../../utils/helpers";
 import { useNavigate } from "react-router-dom";
-
-interface UserProjectCard {
-  _id: string;
-  name: string;
-  description: string;
-  members: any[];
-  isPublic: boolean;
-  stars: number;
-  createdAt: Date;
-  updatedAt: Date;
-  __v: number;
-}
+import type { Project } from "../../store/slices/projectSlice";
 
 interface Props {
-  projectData: UserProjectCard;
+  projectData: Project;
 }
 
 const UserProjectCard = ({ projectData }: Props) => {
-  const { name, description, members, isPublic, createdAt, _id } = projectData;
+  const { name, description, members, isPublic, createdAt, _id, techs } =
+    projectData;
   const navigate = useNavigate();
 
   return (
@@ -53,18 +43,18 @@ const UserProjectCard = ({ projectData }: Props) => {
         {description}
       </p>
       <div className="flex flex-wrap gap-2 mb-6">
-        {/* Adding this after user able to create files and can be able to work on project */}
-        {/* {tech.map((t) => (
-          <span
-            key={t}
-            className="px-3 py-1 bg-gray-800/50 text-gray-300 text-xs rounded-lg border border-gray-700/50 hover:border-gray-600/50 transition-colors"
-          >
-            {t}
-          </span>
-        ))} */}
+        {techs &&
+          techs.map((t) => (
+            <span
+              key={t}
+              className="px-3 py-1 bg-gray-800/50 text-gray-300 text-xs rounded-lg border border-gray-700/50 hover:border-gray-600/50 transition-colors"
+            >
+              {t}
+            </span>
+          ))}
       </div>
       <div className="flex items-center justify-between text-sm text-gray-400">
-        {members.length !== 0 && (
+        {members && members.length !== 0 && (
           <div className="flex items-center space-x-1">
             <Users size={16} />
             <span>{members.length} members</span>

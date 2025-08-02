@@ -105,6 +105,12 @@ Users can:
 - Can see all project he is in
 - Project data stored using Redux
 
+### `/project/:id` Project Details page
+User can:
+- See the details of the project
+- Add members to the project (only owner)
+- Update the project details (only owner)
+
 ### `Loading` Page
 
 - A full-screen loader shown while routes or heavy components are being fetched.

@@ -29,6 +29,7 @@ export interface IProject extends Document {
   description: string;
   owner: string; // userId
   members: string[]; // Array of userId
+  techs?: string[]; // Array of techs used in array (added by user)
   fileStructure?: FileStructureNode;
   isPublic: boolean;
   stars: number;
@@ -46,6 +47,7 @@ const ProjectSchema: Schema = new Schema<IProject>(
       type: String,
       default: "",
     },
+    techs: [String],
     owner: {
       type: String,
       required: true,

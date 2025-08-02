@@ -56,7 +56,9 @@ export const getUserProjects = async (
 
     let projectData = [];
     for (let i = 0; i < projectIds.length; ++i) {
-      const data = await Project.findById(projectIds[i]);
+      const data = await Project.findById(projectIds[i]).select(
+        "name description techs members isPublic createdAt _id"
+      ); // Getting only specific data to show in frontend
       if (data) {
         projectData.push(data);
       }

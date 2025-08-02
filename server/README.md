@@ -137,7 +137,8 @@ Sample project data structure created using `mongoose`
     members: String[], // Array of user ids
     fileStructure: Schema.Types.Mixed, // File structure can be anything so mixed
     isPublic: Boolean,
-    stars: Number
+    stars: Number,
+    techs: String[],
   }
 ```
 
@@ -290,12 +291,10 @@ projects: [ // Projects data is in array of type Project
     "name": "Collab Editor",
     "description": "This is colab editor project",
     "owner": "5f592871-6d8b-408c-957c-b57da9d47417",
-    "members": [],
+    "members": [], // Other members user id of project
+    "techs": [], // Techs used in project given by owner
     "isPublic": false,
-    "stars": 0,
     "createdAt": "2025-07-30T16:20:29.318Z",
-    "updatedAt": "2025-07-30T16:20:29.318Z",
-    "__v": 0
   }
 ]
 ```
@@ -322,10 +321,10 @@ All business logics to create, update, delete projects will be in `/api/v1/proje
 
 ### 1. Create
 
-Sample `POST` data on `/`
-
 - Only authenticated user can create project because of `isAuthenticated` middlware
 - Make sure to send the token in headers format:- `Bearer <token>`
+
+Sample `POST` data on `/`
 
 ```json
 {
@@ -352,6 +351,38 @@ Api response when data is valid
     updatedAt: Date,
     __v: number,
   }
+}
+```
+
+### 2. Get project details
+
+- Only `Authenticated` user can get project data
+- If project is `public` anyone can see the project details
+- If project is `private` only owner and members of the project can see the project details
+
+`GET` request on route `/:id`
+
+- Make sure to send `project id` as `id` in params
+
+Api response on success
+
+```json
+{
+  "project": {
+    name: "Collab_editor",
+    description: "This is the project description",
+    owner: "user_id",
+    members: ["user1_id", "user2_id"],
+    isPublic: true,
+    stars: 5,
+    fileStructure: {}, // In JSON form
+    _id: "project_id",
+    createdAt: Date,
+    updatedAt: Date,
+    __v: number,
+  },
+  "isAllowedToSee": true,
+  "isAllowedToEdit": true, // Only members and owners can get access to edit data
 }
 ```
 

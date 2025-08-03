@@ -31,8 +31,8 @@ const FileTree = ({ nodes, level = 0, onFileSelect, selectedFileId }: any) => {
 
   return (
     <div>
-      {nodes.map((node: any) => (
-        <div key={node.id}>
+      {nodes?.map((node: any) => (
+        <div key={node?.id}>
           <div
             className={`flex items-center space-x-2 py-2 px-3 hover:bg-gray-800/30 rounded-lg cursor-pointer transition-all duration-200 ${
               node.type === "folder" ? "font-medium" : ""

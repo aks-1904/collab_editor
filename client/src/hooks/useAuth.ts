@@ -13,6 +13,7 @@ import {
   setUserLoading,
 } from "../store/slices/userSlice";
 import { useNavigate } from "react-router-dom";
+import { setCollabProjects, setMyProjects } from "../store/slices/projectSlice";
 
 // Typescript interface
 interface CreateAccountCredential {
@@ -167,7 +168,10 @@ export const useAuth = () => {
 
   const logout = () => {
     dispatch(logoutUser());
+    dispatch(setMyProjects([]));
+    dispatch(setCollabProjects([]));
     localStorage.removeItem("token");
+    sessionStorage.removeItem("hasFetchedUserProjects");
     showToast({
       type: "success",
       title: "Logout",

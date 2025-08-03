@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { User } from "./userSlice";
 
 type FileType = "file" | "folder";
 
@@ -28,9 +29,9 @@ export interface Project {
   name: string;
   description: string;
   fileStructure?: FileStructureNode;
-  owner: string;
+  owner: User;
   techs?: string[];
-  members?: string[];
+  members?: User[];
   isPublic: boolean;
   stars: number;
   createdAt: Date;
@@ -41,11 +42,13 @@ export interface Project {
 interface ProjectSliceState {
   my_projects: Project[];
   collaborative_projects: Project[];
+  selected_project: Project | null;
 }
 
 const initialState: ProjectSliceState = {
   my_projects: [],
   collaborative_projects: [],
+  selected_project: null,
 };
 
 const projectSlice = createSlice({
@@ -64,6 +67,9 @@ const projectSlice = createSlice({
     addCollabProjects: (state, action: PayloadAction<Project>) => {
       state.collaborative_projects.push(action.payload);
     },
+    setSelectedProject: (state, action: PayloadAction<Project>) => {
+      state.selected_project = action.payload;
+    },
   },
 });
 
@@ -72,5 +78,6 @@ export const {
   setCollabProjects,
   addMyProject,
   addCollabProjects,
+  setSelectedProject,
 } = projectSlice.actions;
 export default projectSlice;

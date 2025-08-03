@@ -10,7 +10,9 @@ export function getRandomGradient(): string {
   return gradientCombos[Math.floor(Math.random() * gradientCombos.length)];
 }
 
-export const countFiles = (nodes: any) => {
+export const countFiles = (nodes: any): number => {
+  if (!nodes || !Array.isArray(nodes)) return 0;
+
   let count = 0;
   nodes.forEach((node: any) => {
     if (node.type === "file") {
@@ -22,17 +24,35 @@ export const countFiles = (nodes: any) => {
   return count;
 };
 
-export const getTotalSize = (nodes: any) => {
+export const getTotalSize = (nodes: any): string => {
+  if (!nodes || !Array.isArray(nodes)) return "0 B";
+
   let totalBytes = 0;
   nodes.forEach((node: any) => {
-    if (node.type === "file" && node.content) {
+    if (node.type === "file" && typeof node.content === "string") {
       totalBytes += new Blob([node.content]).size;
     } else if (node.children) {
-      totalBytes += getTotalSize(node.children) as unknown as number;
+      totalBytes += getTotalSizeBytes(node.children); // helper for byte math
     }
   });
 
   if (totalBytes < 1024) return `${totalBytes} B`;
   if (totalBytes < 1024 * 1024) return `${(totalBytes / 1024).toFixed(1)} KB`;
   return `${(totalBytes / (1024 * 1024)).toFixed(1)} MB`;
+};
+
+// Helper function to return just the raw byte value
+export const getTotalSizeBytes = (nodes: any): number => {
+  if (!nodes || !Array.isArray(nodes)) return 0;
+
+  let totalBytes = 0;
+  nodes.forEach((node: any) => {
+    if (node.type === "file" && typeof node.content === "string") {
+      totalBytes += new Blob([node.content]).size;
+    } else if (node.children) {
+      totalBytes += getTotalSizeBytes(node.children);
+    }
+  });
+
+  return totalBytes;
 };

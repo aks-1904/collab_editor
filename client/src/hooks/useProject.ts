@@ -3,7 +3,7 @@ import { isValidProjectName } from "../utils/validators";
 import { useToast } from "./useToast";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addMyProject } from "../store/slices/projectSlice";
+import { addMyProject, setSelectedProject } from "../store/slices/projectSlice";
 import { useState } from "react";
 
 interface ProjectCredential {
@@ -54,7 +54,7 @@ export function useProject() {
       );
 
       if (res.data.success) {
-        dispatch(addMyProject(res.data.project)); // adding project data to redux store
+        dispatch(addMyProject(res.data?.project)); // adding project data to redux store
         showToast({
           type: "success",
           title: "Project Created",
@@ -81,5 +81,45 @@ export function useProject() {
     }
   };
 
-  return { createProject, loading };
+  const getProjectDetails = async (id: string) => {
+    try {
+      setLoading(true);
+      if (!id) return;
+
+      const res = await axios.get(`${PROJECT_API_URL}/${id}`, {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (res.data?.isAllowedToSee) {
+        dispatch(setSelectedProject(res.data?.project));
+      } else if (!res.data?.isAllowedToSee) {
+        navigate("/dashboard", {
+          replace: true,
+        });
+        throw new Error("You are not allowed to see the project details");
+      }
+    } catch (error: any) {
+      navigate("/dashboard", {
+        replace: true,
+      });
+      const errorMsg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Internal server error, try again later";
+
+      showToast({
+        type: "error",
+        title: "Failed",
+        message: errorMsg,
+        duration: 3000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { createProject, loading, getProjectDetails };
 }

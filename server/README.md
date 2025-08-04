@@ -299,22 +299,6 @@ projects: [ // Projects data is in array of type Project
 ]
 ```
 
-### 3. Search User
-
-`GET` request on `/search`
-Search user by email
-
-- Make sure to send `email` of required user in query
-
-Api Response on success
-
-```json
-{
-  "success": true,
-  "users": [] // Array of users containing id, email and name
-}
-```
-
 ## Project Api
 
 All business logics to create, update, delete projects will be in `/api/v1/project` routes
@@ -383,6 +367,34 @@ Api response on success
   },
   "isAllowedToSee": true,
   "isAllowedToEdit": true, // Only members and owners can get access to edit data
+}
+```
+
+### 3. Adding member
+
+- Requesting user should be valid and `owner` of the project
+- Make sure to send projectId and email of the user to add
+
+Sample `POST` data on `/add-member`
+
+```json
+{
+  "email": "aks@example.com",
+  "projectId": "<project_id>"
+}
+```
+
+Server response on `success`
+
+```json
+{
+
+success: true,
+message: "Member added",
+user: { // User data which has been added
+  id: "<user_id>",
+  email: "aks@example.com",
+  name: "Akshay Sharma",
 }
 ```
 

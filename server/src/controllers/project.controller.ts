@@ -1,9 +1,10 @@
 import { Response } from "express";
 import { AuthenticationRequest } from "../middlewares/isAuthenticated.js";
 import { mysqlPool } from "../config/index.js";
-import { isValidName } from "../utils/validators.js";
+import { isValidEmail, isValidName } from "../utils/validators.js";
 import { Project } from "../models/project.model.js";
 import mongoose from "mongoose";
+import { IUser } from "./auth.controller.js";
 
 export const createProject = async (
   req: AuthenticationRequest,
@@ -162,5 +163,92 @@ export const getProjectDetails = async (
       message: "Cannot get project details",
       isAllowedToSee: false,
     });
+  }
+};
+
+export const addMember = async (req: AuthenticationRequest, res: Response) => {
+  try {
+    // getting logged in user data
+    const loggedInUserEmail = req.email;
+    const loggedInUserId = req.id;
+
+    const { email, projectId } = req.body; // Data required to add members
+
+    // Validate input
+    if (!email || !projectId || !isValidEmail(email)) {
+      res.status(404).json({
+        success: false,
+        message: "Email or projectId missing",
+      });
+      return;
+    }
+
+    // Checking project exists
+    const [project] = await mysqlPool.execute(
+      "SELECT user_id from user_projects where project_id = ?",
+      [projectId]
+    );
+    if (!project) {
+      res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
+      return;
+    }
+
+    // Checking if request from the owner or not
+    if ((project as any[])[0].user_id.toString() !== loggedInUserId) {
+      res.status(401).json({
+        success: false,
+        message: "Only owner can add members",
+      });
+      return;
+    }
+
+    // Owner cannot add himself
+    if (email.toString() === loggedInUserEmail?.toString()) {
+      res.status(403).json({
+        success: false,
+        message: "You cannot add yourself",
+      });
+      return;
+    }
+
+    // Checking the given email is related to any valid user ornot
+    const [user] = await mysqlPool.execute(
+      "SELECT id, name, email from users where email = ?",
+      [email]
+    );
+    if ((user as IUser[]).length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+      return;
+    }
+
+    // Adding member to mongoose
+    const projectData = await Project.findById(projectId);
+    if (!projectData?.members.includes((user as IUser[])[0].id.toString())) {
+      projectData?.members.push((user as IUser[])[0].id.toString());
+      await projectData?.save();
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Member added",
+      user: { // User data which has been added
+        id: (user as IUser[])[0].id,
+        email: (user as IUser[])[0].email,
+        name: (user as IUser[])[0].name,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Cannot add member",
+    });
+    return;
   }
 };

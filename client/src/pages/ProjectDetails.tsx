@@ -22,6 +22,8 @@ import MembersCard from "../components/MembersCard";
 import UpdateProject from "../components/dialog/UpdateProject";
 import { useProject } from "../hooks/useProject";
 import Loading from "./Loading";
+import { useDispatch } from "react-redux";
+import { setSelectedProject } from "../store/slices/projectSlice";
 
 const ProjectDetails = () => {
   const [showAddMember, setShowAddMember] = useState(false);
@@ -33,6 +35,7 @@ const ProjectDetails = () => {
   const { getProjectDetails, loading } = useProject();
   const project = useAppSelector((store) => store.project.selected_project);
   const { user } = useAppSelector((store) => store.user);
+  const dispatch = useDispatch();
 
   // Redirect if id is not found
   useEffect(() => {
@@ -45,6 +48,9 @@ const ProjectDetails = () => {
   useEffect(() => {
     if (id && (!project || project._id !== id)) {
       getProjectDetails(id);
+    }
+    if (project) {
+      dispatch(setSelectedProject(project));
     }
   }, [id, project]);
 
@@ -181,7 +187,7 @@ const ProjectDetails = () => {
                     {members.length}
                   </span>
                 </div>
-                {isAllowedToEdit && (
+                {isOwner && (
                   <button
                     onClick={() => setShowAddMember(true)}
                     className="p-2 text-blue-400 hover:bg-blue-500/20 rounded-xl transition-all duration-200"
@@ -236,6 +242,7 @@ const ProjectDetails = () => {
       <AddMember
         isOpen={showAddMember}
         onClose={() => setShowAddMember(false)}
+        projectId={id}
       />
       <UpdateProject
         isOpen={updateProjectDialog}

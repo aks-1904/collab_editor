@@ -1,9 +1,13 @@
 import axios from "axios";
-import { isValidProjectName } from "../utils/validators";
+import { isValidEmail, isValidProjectName } from "../utils/validators";
 import { useToast } from "./useToast";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addMyProject, setSelectedProject } from "../store/slices/projectSlice";
+import {
+  addMyProject,
+  setSelectedProject,
+  addMember as addMemberRedux,
+} from "../store/slices/projectSlice";
 import { useState } from "react";
 
 interface ProjectCredential {
@@ -19,6 +23,7 @@ export function useProject() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [addMemberLoading, setAddMemberLoading] = useState(false);
 
   const createProject = async ({
     name,
@@ -121,5 +126,65 @@ export function useProject() {
     }
   };
 
-  return { createProject, loading, getProjectDetails };
+  const addMember = async ({
+    projectId,
+    email,
+  }: {
+    projectId: string;
+    email: string;
+  }) => {
+    setAddMemberLoading(true);
+    try {
+      if (!isValidEmail(email)) throw new Error("Please give a valid email");
+      if (!projectId) throw new Error("Project not found");
+
+      const res = await axios.post(
+        `${PROJECT_API_URL}/add-member`,
+        {
+          projectId,
+          email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (res.data?.success) {
+        const { user } = res.data;
+        if (!user) throw new Error("Failed to get user, try again later");
+        dispatch(addMemberRedux({ projectId, user }));
+        showToast({
+          type: "success",
+          title: "Success",
+          message: res.data?.message || "Member added successfully",
+          duration: 4000,
+        });
+        return true;
+      }
+    } catch (error: any) {
+      const errMsg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Internal server error, try again later";
+      showToast({
+        type: "error",
+        title: "Failed!",
+        message: errMsg,
+        duration: 2000,
+      });
+      return false;
+    } finally {
+      setAddMemberLoading(false);
+    }
+  };
+
+  return {
+    createProject,
+    loading,
+    getProjectDetails,
+    addMember,
+    addMemberLoading,
+  };
 }

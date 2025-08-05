@@ -70,6 +70,14 @@ const projectSlice = createSlice({
     setSelectedProject: (state, action: PayloadAction<Project>) => {
       state.selected_project = action.payload;
     },
+    addMember: (
+      state,
+      action: PayloadAction<{ projectId: string; user: User }>
+    ) => {
+      state.my_projects
+        ?.find((e) => e._id === action.payload.projectId)
+        ?.members?.push(action.payload.user);
+    },
   },
 });
 
@@ -79,5 +87,6 @@ export const {
   addMyProject,
   addCollabProjects,
   setSelectedProject,
+  addMember,
 } = projectSlice.actions;
 export default projectSlice;

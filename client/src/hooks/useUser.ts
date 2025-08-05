@@ -69,5 +69,10 @@ export function useUser() {
     }
   };
 
-  return { getUserProfile, loading, getUserProjects, userProjectsLoading };
+  return {
+    getUserProfile,
+    loading,
+    getUserProjects,
+    userProjectsLoading,
+  };
 }

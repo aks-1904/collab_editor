@@ -2,23 +2,23 @@ import { Search, X } from "lucide-react";
 import { useState } from "react";
 import type { User } from "../../store/slices/userSlice";
 import Button from "../Button";
+import { useProject } from "../../hooks/useProject";
 
 export interface UserCard extends User {
   avatar: string;
   isAdded?: boolean;
 }
 
-const AddMember = ({ isOpen, onClose }: any) => {
+const AddMember = ({ isOpen, onClose, projectId }: any) => {
   const [email, setEmail] = useState("");
   const [searchResults] = useState<UserCard[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  const { addMember, addMemberLoading } = useProject();
 
-  const handleSearch = (searchEmail: string) => {
+  const handleAddMember = async () => {
     if (email.trim() === "") return;
-    setIsSearching(true);
-    console.log(searchEmail);
-    setEmail("");
-    setIsSearching(false);
+    const res = await addMember({ projectId, email });
+    if (res) setEmail("");
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -47,7 +47,7 @@ const AddMember = ({ isOpen, onClose }: any) => {
           />
         </div>
 
-        {isSearching && (
+        {addMemberLoading && (
           <div className="text-center py-4">
             <div className="animate-spin w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
           </div>
@@ -81,11 +81,11 @@ const AddMember = ({ isOpen, onClose }: any) => {
 
         <div className="flex flex-col space-y-3">
           <Button
-            onClick={() => handleSearch(email)}
+            onClick={handleAddMember}
             disabled={email.trim() === ""}
-            className={`${isSearching && "hidden"}`}
+            className={`${addMemberLoading && "hidden"}`}
           >
-            Search
+            Add Member
           </Button>
           <Button className="my-2" variant="secondary" onClick={onClose}>
             Cancel
